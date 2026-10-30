@@ -1,0 +1,20 @@
+# ClearOps in the dev namespace (Concept 5).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: clearops-dev
+  namespace: argocd          # the Application object lives here...
+spec:
+  project: clearops          # ...guarded by the AppProject
+  source:
+    repoURL: https://github.com/vivianokose/clearops-gitops
+    targetRevision: main     # follow every new commit on main
+    path: apps/clearops/overlays/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev           # ...and the app it deploys lands here
+  syncPolicy:
+    # No "automated:" yet. Syncs are manual for now, so each switch
+    # (automated, selfHeal, prune) can be turned on and seen on its own.
+    syncOptions:
+      - CreateNamespace=true

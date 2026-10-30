@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"   # config exists before anything reads it
+data:
+  LOG_LEVEL: "info"
+  ENVIRONMENT: "base"                    # each overlay overrides this
+  REDIS_HOST: "redis-store"              # fixed: was "redis", a Service with no pods behind it
+  REDIS_PORT: "6379"

@@ -1,0 +1,23 @@
+# Guardrails for every ClearOps Application (Concept 6).
+# Anything outside these rules is refused at sync time.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: clearops
+  namespace: argocd
+spec:
+  description: ClearOps three-tier app (frontend, API, Redis)
+  # May only deploy FROM this one repo
+  sourceRepos:
+    - https://github.com/vivianokose/clearops-gitops
+  # May only deploy TO these namespaces, on this cluster
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: dev
+    - server: https://kubernetes.default.svc
+      namespace: staging
+  # Cluster-wide objects: only Namespaces (needed for CreateNamespace=true).
+  # No ClusterRoles, no CRDs, nothing else cluster-wide.
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace

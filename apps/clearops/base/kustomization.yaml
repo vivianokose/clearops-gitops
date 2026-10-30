@@ -1,0 +1,14 @@
+# ClearOps base: shared by every environment.
+# No namespace and no image tags here. Each overlay sets its own.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - configmap.yaml
+  - networkpolicy-redis.yaml
+  - redis-statefulset.yaml
+  - api-deployment.yaml
+  - api-service.yaml
+  - api-hpa.yaml
+  - frontend-deployment.yaml
+  - frontend-service.yaml
+  - postsync-healthcheck.yaml

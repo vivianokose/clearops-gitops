@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-store
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"    # data layer first
+spec:
+  serviceName: redis-store
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-store
+  template:
+    metadata:
+      labels:
+        app: redis-store
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-store
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  clusterIP: None   # headless: gives the StatefulSet pod a stable DNS name
+  selector:
+    app: redis-store
+  ports:
+    - port: 6379

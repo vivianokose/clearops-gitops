@@ -1,0 +1,36 @@
+# PostSync hook: runs once after every sync, when everything else is healthy.
+# This is the "verify" stage from the Module 8 Jenkins pipeline, moved into the cluster.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clearops-smoke-test
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    # Keep the last run so its logs can be read; delete it just before the next run.
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: smoke-test
+          image: curlimages/curl:8.11.1
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -e
+              echo "API health:"
+              curl -fsS --retry 5 --retry-delay 3 http://clearops-api/health
+              echo
+              echo "Frontend health:"
+              curl -fsS --retry 5 --retry-delay 3 http://clearops-frontend/health
+              echo
+              echo "Smoke test passed"
+          resources:
+            requests:
+              memory: "16Mi"
+              cpu: "10m"
+            limits:
+              memory: "32Mi"
+              cpu: "100m"

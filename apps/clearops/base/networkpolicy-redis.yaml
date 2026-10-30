@@ -1,0 +1,22 @@
+# Only the API may talk to Redis.
+# Fixed: the Module 10 version selected app: redis, which no longer matches any pod.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-allow-api-only
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"   # the fence goes up before Redis starts
+spec:
+  podSelector:
+    matchLabels:
+      app: redis-store
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: clearops-api
+      ports:
+        - protocol: TCP
+          port: 6379

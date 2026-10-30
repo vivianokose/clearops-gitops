@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clearops-frontend
+  labels:
+    app: clearops-frontend
+    tier: frontend
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"    # last: it depends on the API
+spec:
+  replicas: 2           # no HPA here, so git owns this number
+  selector:
+    matchLabels:
+      app: clearops-frontend
+  template:
+    metadata:
+      labels:
+        app: clearops-frontend
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: crystalvivian/clearops-frontend   # tag set per overlay
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10

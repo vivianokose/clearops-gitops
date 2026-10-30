@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clearops-api
+  labels:
+    app: clearops-api
+    tier: backend
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"    # after Redis is healthy
+spec:
+  # No "replicas:" on purpose. The HPA owns this number (Concept 10).
+  # If git also set it, ArgoCD self-heal and the HPA would fight forever.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: clearops-api
+  template:
+    metadata:
+      labels:
+        app: clearops-api
+        tier: backend
+    spec:
+      containers:
+        - name: api
+          image: crystalvivian/clearops-api   # tag set per overlay
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: api-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
