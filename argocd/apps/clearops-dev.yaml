@@ -14,7 +14,19 @@ spec:
     server: https://kubernetes.default.svc
     namespace: dev           # ...and the app it deploys lands here
   syncPolicy:
-    # No "automated:" yet. Syncs are manual for now, so each switch
-    # (automated, selfHeal, prune) can be turned on and seen on its own.
+    # Lab 04 Step 2: automated ON. It reacts to NEW COMMITS in git.
+    # selfHeal and prune are written out as false on purpose, so it is
+    # obvious each one is a separate switch (Concept 8).
+    automated:
+      selfHeal: false        # does NOT undo manual changes in the cluster (yet)
+      prune: false           # does NOT delete things removed from git (Lab 05)
     syncOptions:
       - CreateNamespace=true
+    # If a wave is not healthy yet (like the HPA with no metrics on a fresh pod),
+    # try the sync again instead of giving up: 15s, 30s, 60s, 2m, 3m.
+    retry:
+      limit: 5
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 3m
