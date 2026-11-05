@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: dev
 resources:
 - ../../base
-- feature-flags.yaml
 patches:
 - path: patch-configmap.yaml
 - path: patch-hpa.yaml
