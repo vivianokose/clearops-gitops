@@ -14,11 +14,11 @@ spec:
     server: https://kubernetes.default.svc
     namespace: dev           # ...and the app it deploys lands here
   syncPolicy:
-    # Lab 04 Step 2: automated ON. It reacts to NEW COMMITS in git.
-    # selfHeal and prune are written out as false on purpose, so it is
-    # obvious each one is a separate switch (Concept 8).
+    # Lab 04 Step 3: automated + selfHeal. Reacts to new commits AND to drift.
+    # Each switch is written out on its own, so it is obvious they are
+    # separate settings (Concept 8).
     automated:
-      selfHeal: false        # does NOT undo manual changes in the cluster (yet)
+      selfHeal: true         # Lab 04 Step 3: undo manual changes in the cluster
       prune: false           # does NOT delete things removed from git (Lab 05)
     syncOptions:
       - CreateNamespace=true
