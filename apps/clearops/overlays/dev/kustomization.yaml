@@ -13,6 +13,8 @@ replicas:
 # Jenkins changes these tags with "kustomize edit set image" (Concept 12).
 images:
 - name: crystalvivian/clearops-api
-  newTag: 1.1.1
+  newName: crystalvivian/clearops-api
+  newTag: 1.1.0
 - name: crystalvivian/clearops-frontend
-  newTag: 1.1.1
+  newName: crystalvivian/clearops-frontend
+  newTag: 1.1.0
