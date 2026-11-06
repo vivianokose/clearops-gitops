@@ -3,16 +3,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: staging
 resources:
-  - ../../base
+- ../../base
 patches:
-  - path: patch-configmap.yaml
-  - path: patch-hpa.yaml
+- path: patch-configmap.yaml
+- path: patch-hpa.yaml
 replicas:
-  - name: clearops-frontend
-    count: 2
+- count: 2
+  name: clearops-frontend
 # Jenkins changes these tags with "kustomize edit set image" (Concept 12).
 images:
-  - name: crystalvivian/clearops-api
-    newTag: "1.0.1"
-  - name: crystalvivian/clearops-frontend
-    newTag: "1.0.0"
+- name: crystalvivian/clearops-api
+  newTag: 1.1.2
+- name: crystalvivian/clearops-frontend
+  newTag: 1.1.2
