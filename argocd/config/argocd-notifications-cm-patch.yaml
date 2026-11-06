@@ -1,0 +1,40 @@
+# ArgoCD notifications: write a commit status on GitHub (Concept 18).
+# Applied by hand at bootstrap:
+#   kubectl patch configmap argocd-notifications-cm -n argocd --patch-file argocd/config/argocd-notifications-cm-patch.yaml
+# The token itself lives only in the argocd-notifications-secret Secret (key: github-token),
+# never in git. $github-token below is a reference to that key, not the value.
+data:
+  # "Service": WHERE messages go. GitHub's commit status API, via ArgoCD's webhook service.
+  service.webhook.github: |
+    url: https://api.github.com
+    headers:
+      - name: Authorization
+        value: token $github-token
+      - name: Accept
+        value: application/vnd.github+json
+
+  # "Templates": WHAT is sent.
+  template.github-status-success: |
+    webhook:
+      github:
+        method: POST
+        path: /repos/{{call .repo.FullNameByRepoURL .app.spec.source.repoURL}}/statuses/{{.app.status.operationState.operation.sync.revision}}
+        body: |
+          {"state": "success", "context": "argocd/{{.app.metadata.name}}", "description": "Synced and healthy in {{.app.spec.destination.namespace}}"}
+  template.github-status-failure: |
+    webhook:
+      github:
+        method: POST
+        path: /repos/{{call .repo.FullNameByRepoURL .app.spec.source.repoURL}}/statuses/{{.app.status.operationState.operation.sync.revision}}
+        body: |
+          {"state": "failure", "context": "argocd/{{.app.metadata.name}}", "description": "Sync failed in {{.app.spec.destination.namespace}}"}
+
+  # "Triggers": WHEN to send. Once per commit, so a resync does not post twice.
+  trigger.on-deployed-healthy: |
+    - when: app.status.operationState != nil and app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+      oncePer: app.status.operationState.operation.sync.revision
+      send: [github-status-success]
+  trigger.on-sync-failed: |
+    - when: app.status.operationState != nil and app.status.operationState.phase in ['Error', 'Failed']
+      oncePer: app.status.operationState.operation.sync.revision
+      send: [github-status-failure]

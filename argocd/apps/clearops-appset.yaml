@@ -21,6 +21,10 @@ spec:
   template:
     metadata:
       name: 'clearops-{{ .path.basename }}'
+      annotations:
+        # Lab 11: report every deploy back to GitHub as a commit status (Concept 18).
+        notifications.argoproj.io/subscribe.on-deployed-healthy.github: ""
+        notifications.argoproj.io/subscribe.on-sync-failed.github: ""
     spec:
       project: clearops
       source:
