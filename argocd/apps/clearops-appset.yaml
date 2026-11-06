@@ -1,0 +1,48 @@
+# One template, one Application per environment folder (Concept 14).
+# apps/clearops/overlays/dev     -> Application clearops-dev     -> namespace dev
+# apps/clearops/overlays/staging -> Application clearops-staging -> namespace staging
+# A new folder means a new environment. The clearops AppProject still decides
+# which namespaces are allowed, so a "prod" folder would be refused until the
+# project allows it. Two guardrails working together.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: clearops
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: https://github.com/vivianokose/clearops-gitops
+        revision: main
+        directories:
+          - path: apps/clearops/overlays/*
+  template:
+    metadata:
+      name: 'clearops-{{ .path.basename }}'
+    spec:
+      project: clearops
+      source:
+        repoURL: https://github.com/vivianokose/clearops-gitops
+        targetRevision: main
+        path: '{{ .path.path }}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .path.basename }}'
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 15s
+            factor: 2
+            maxDuration: 3m
+  syncPolicy:
+    # If this ApplicationSet is ever deleted, keep the running workloads.
+    # Protects against the "one deleted file removes an environment" cascade.
+    preserveResourcesOnDeletion: true
