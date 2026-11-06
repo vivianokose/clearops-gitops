@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: redis-auth
+  namespace: dev
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  encryptedData:
+    REDIS_PASSWORD: AgDfgQ2zOfTPJ+OjRb+7k2pjEJX+e5iBV5UHlIq00xzh5W59S6IS2BjTetf+jKVbgLc6s4nrJkkroMehDlJ+CiIAR3nJ1lz4FYDawf5DOZr72PxjqTdUIMOqsXkTy6RgHTsp9o9Q2MVRIk2Xo+3ezOkSdMVTyct+yxieSLYQ9P72pZQJl66UbkEVEgnHyHA5evZABPMPVksekGfR0IQVNpQspj8EwEsQOQO5fvviu3siLIXA9/t9Fcqp2i4ts18xosrpX8CITvo+M5QuLsrFoEfBN023gt/lPfNqD7V0kG4zsq5lps70l/O8DGUsJht6bNx54MUoaos+vBc+HW3h2pc/t0R6GYtwc+GPSzzzSAj8RnozzNY5KMwHaZ1/6Un/dsSkMY3FQ9FtGOOUaRYV3X2hpl7VnWhd9REU8KD522toIz3idaCGiAwr0VdQvtCwd3OgWT5SaY2fAUs3AZS6Emotie56YiYtAx+hJ9Gc7x1JQ/IdGz4qN2edNI1+2UwQXOpMiYs4GjUp+LjnvcUGCHz3c29pverK7kjO+f8uWmUNfsk/MX98nS3gdKIDqlvFoYrK1MrvDc4FEc7LSwo2OBACogKVDldYomabtr9B352lns9L8xF4Kmp4DSrhFOuIAjIIsVbj24GgUPzZbi46nCCByoyTOaYnbrDfcwzwypNWfog2McW23KLdBwovSVB58qnJrY6c5sIgNho8y78CRau2YXSetgFBO/aGKM3TWnenPw==
+  template:
+    metadata:
+      name: redis-auth
+      namespace: dev

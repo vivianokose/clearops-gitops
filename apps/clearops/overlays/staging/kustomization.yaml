@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: staging
 resources:
 - ../../base
+- redis-auth-sealed.yaml
 patches:
 - path: patch-configmap.yaml
 - path: patch-hpa.yaml

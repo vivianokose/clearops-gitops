@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: redis-auth
+  namespace: staging
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  encryptedData:
+    REDIS_PASSWORD: AgB+ozlPCmhH4jYTHmoJ2jA0XDecXYeIkFQHEFK8bdokXcM2J/EV2MpaIeQFjoF83rN3qNg5FtlPcRuA/RWEPFaImjBH9zbEa0KPa2eAbhzNhxiqvYKD8nbSbNx07C2wMCfCk9GKjLPtitEoWBPN8ADkkEYqYZLlSfXHkj3U3fD3JJyKCHTufmyMVcZUj7eDMnHxX66LL9Du2eHlhjxLdWe4nvHH0ggUQgZlObjPl5cTiSwgM3zJ4y/kZ8w4Nn2HER4aXKS2pa8UjNxV5Okmcs7BLLuCRsiKKKNORVCc+qbkMgMvFLkHOnh9nruggDO7TUpZxwV2bybHqpv0b2eiulECuroreVFKZC815vNjUqovufEwfPezEoMicq1XTc0rvbgTem/GY3WEe41au2GBkCvwYm85+76qs1ciL0bhHymb3737bzc6+rlAk+EhVut6/Lnq1Qq7mCBmDAhmW1aFxSWdn7sZ8JW6uD9hKzvMTf4rgKoxptSsH+OXqr9XBFIxIN5cWVrBwFJtWteLFShroNP/NBZYX1rUNXOGE5NNCCmtYpz+0jLa0NYE2SgHZkyicgo6Qpf1y0YlnRXUx6l5elr/qgl6ic6rWvkQja9Fsl6O/ZUFDi6q8+1i8jKy91zmFa9yG+nr682S/b6qVzPa6oKRq0P2z07C5wB4QQHRl8kQfeNxAdWnTPc/5GMtcTsPXISW8kxQ76U7p7xr4C2Lz6dJ8HM6MJ08UywOum4Hz1c0Pw==
+  template:
+    metadata:
+      name: redis-auth
+      namespace: staging
