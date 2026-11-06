@@ -1,6 +1,6 @@
 # Guardrails for the root (App of Apps) Application (Concept 6 + 14).
-# The root may only create Application objects, only in the argocd namespace,
-# and only from this repo. It cannot deploy workloads itself.
+# The root may only create Application and ApplicationSet objects, only in the
+# argocd namespace, and only from this repo. It cannot deploy workloads itself.
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -16,4 +16,6 @@ spec:
   clusterResourceWhitelist: []         # nothing cluster-wide
   namespaceResourceWhitelist:
     - group: argoproj.io
-      kind: Application                # only Applications, nothing else
+      kind: Application
+    - group: argoproj.io
+      kind: ApplicationSet             # Lab 09: the root now creates an ApplicationSet
