@@ -1,0 +1,27 @@
+# ClearOps in the staging namespace. Created by the root Application (App of Apps).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: clearops-staging
+  namespace: argocd
+spec:
+  project: clearops
+  source:
+    repoURL: https://github.com/vivianokose/clearops-gitops
+    targetRevision: main
+    path: apps/clearops/overlays/staging
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: staging
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 3m

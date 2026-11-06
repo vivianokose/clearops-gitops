@@ -1,0 +1,20 @@
+# App of Apps root (Concept 14). Applied by hand ONCE: this is the bootstrap.
+# Everything in argocd/apps/ is then created and kept in sync by ArgoCD itself.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/vivianokose/clearops-gitops
+    targetRevision: main
+    path: argocd/apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      selfHeal: true    # someone edits an Application by hand? Put it back.
+      prune: false      # deliberately OFF: deleting a file here would delete a whole environment.

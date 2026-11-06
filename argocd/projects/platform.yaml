@@ -1,0 +1,19 @@
+# Guardrails for the root (App of Apps) Application (Concept 6 + 14).
+# The root may only create Application objects, only in the argocd namespace,
+# and only from this repo. It cannot deploy workloads itself.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  description: Root Application that manages the ClearOps Applications
+  sourceRepos:
+    - https://github.com/vivianokose/clearops-gitops
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: argocd
+  clusterResourceWhitelist: []         # nothing cluster-wide
+  namespaceResourceWhitelist:
+    - group: argoproj.io
+      kind: Application                # only Applications, nothing else
